@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview Questions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #f5f8ff, #ecf3ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-section {
+            flex: 1;
+            padding: 60px 40px;
+            background: linear-gradient(to bottom right, #f0f4ff, #e5f2ff);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .left-section h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .left-section p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .left-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .right-section h2 {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-btn {
+            padding: 14px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="left-section">
+            <h1>Interview Time</h1>
+            <p>Please answer the following questions</p>
+            <img src="https://www.surveylegend.com/wordpress/wp-content/uploads/2020/12/best-open-ended-questions.png" alt="Interview illustration" />
+        </div>
+        <div class="right-section">
+            <h2>Answer the Questions</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="q1">1. Tell me about yourself?</label>
+                    <textarea id="q1" name="q1" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="q2">2. What are Python's key features?</label>
+                    <textarea id="q2" name="q2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="q3">3. Explain the difference between lists, tuples, and sets in Python.</label>
+                    <textarea id="q3" name="q3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="q4">4. What is the purpose of the __init__() method in Python classes?</label>
+                    <textarea id="q4" name="q4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="q5">5. How does Python manage memory?</label>
+                    <textarea id="q5" name="q5" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Answers</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

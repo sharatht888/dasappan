@@ -1,0 +1,209 @@
+1. Tell me about yourself.
+
+"Hello, I'm [Your Name], a Python developer with [X years] of experience in building scalable web applications and automation tools.
+
+
+
+2. What are Python's key features?
+
+Python is an interpreted, high-level, dynamically typed language known for its simplicity and readability. Key features include:
+Dynamic typing and automatic memory management
+Extensive standard library and third-party modules
+
+
+
+3. Explain the difference between lists, tuples, and sets in Python.
+
+List: Ordered, mutable, allows duplicate elements.
+Tuple: Ordered, immutable, allows duplicate elements.
+Set: Unordered, mutable, does not allow duplicate elements.
+
+
+
+
+4. What is the purpose of the __init__() method in Python classes?
+
+The __init__() method is the constructor in Python classes. It initializes the object's attributes when an instance is created.
+
+
+
+5. How does Python manage memory?
+
+Python uses a private heap space for memory management, where all objects and data structures are stored. The built-in garbage collector recycles unused memory to prevent memory leaks
+
+
+
+6. What are Python's built-in data types?
+
+Common built-in data types include:
+Numeric: int, float, complex
+Sequence: list, tuple, range
+Text: str
+
+
+
+7. What is the difference between shallow and deep copy?
+
+Shallow copy: Creates a new object but inserts references into it of the objects found in the original. Changes to nested objects affect both copies.
+Deep copy: Creates a new object and recursively adds copies of nested objects. Changes to nested objects do not affect the original.
+
+
+
+8. What are the principles of OOP in Python?
+
+The four main principles are:
+Encapsulation: Bundling data and methods that operate on the data within one unit.
+Abstraction: Hiding complex implementation details and showing only the necessary features.
+Inheritance: Deriving new classes from existing ones, inheriting attributes and methods.
+
+
+
+9. How does Python handle multiple inheritance?
+
+Python supports multiple inheritance, allowing a class to inherit from multiple parent classes. The method resolution order (MRO) determines the order in which base classes are searched when executing a method.
+
+
+
+10. What is the difference between class methods and static methods?
+
+Class method: Defined with @classmethod decorator, takes cls as the first parameter, and can access or modify class state.
+Static method: Defined with @staticmethod decorator, does not take self or cls as the first parameter, and cannot access or modify class or instance state.
+
+
+
+11. What is an iterator in Python?
+
+An iterator is an object that implements the __iter__() and __next__() methods, allowing iteration over its elements one at a time.
+
+
+
+12. What is a generator in Python?
+
+A generator is a function that uses the yield statement to return an iterator. It allows for lazy evaluation, generating items one at a time and conserving memory.
+
+
+
+13. How does Python handle exceptions?
+
+Python uses try-except blocks to catch and handle exceptions. The finally block can be used to execute code regardless of whether an exception occurred.
+
+
+
+14. What is the difference between assert and exceptions?
+
+assert: Used for debugging purposes to test conditions that should always be true. If the condition is false, an AssertionError is raised.
+Exceptions: Used to handle errors that occur during program execution, allowing for graceful error handling.
+
+
+
+15. How do you perform unit testing in Python?
+
+Python provides the unittest module for writing and running tests. Third-party libraries like pytest offer more advanced testing features.
+
+
+
+16. What are decorators in Python?
+
+Decorators are functions that modify the behavior of other functions or classes. They are often used for logging, access control, and instrumentation.
+
+
+
+17. Explain the Global Interpreter Lock (GIL).
+
+The GIL is a mutex that protects access to Python objects, preventing multiple native threads from executing Python bytecodes simultaneously. It simplifies memory management but can be a bottleneck in CPU-bound multi-threaded programs.
+
+
+
+
+18. What are context managers in Python?
+
+Context managers allow for the setup and teardown of resources, ensuring proper acquisition and release. They are implemented using the with statement and define __enter__() and __exit__() methods
+
+
+
+
+19. How would you implement a stack in Python?
+
+A stack can be implemented using a list with append() and pop() methods to add and remove elements from the end.
+
+
+
+
+20. How do you reverse a string in Python?
+
+You can reverse a string using slicing: reversed_string = original_string[::-1].
+
+
+
+
+
+21. How would you find the first non-repeating character in a string?
+
+One approach is to use a dictionary to count character occurrences and then iterate through the string to find the first character with a count of one.
+
+
+
+
+22. What are the differences between Django and Flask?
+
+Django: A high-level, full-stack web framework with built-in features like ORM, admin interface, and authentication.
+Flask: A lightweight, micro-framework that provides flexibility and is suitable for smaller applications or when custom components are needed.
+
+
+
+
+23. How do you handle database migrations in Django?
+
+Django uses the makemigrations and migrate commands to create and apply database schema changes based on model definitions.
+
+
+
+
+24. What is a RESTful API, and how do you implement one in Python?
+
+A RESTful API adheres to REST principles, using HTTP methods for CRUD operations. In Python, frameworks like Flask and Django REST Framework can be used to build RESTful APIs.
+
+
+
+
+25. How do you deploy a Python application?
+
+Deployment steps may include:
+Setting up a virtual environment
+Installing dependencies
+Configuring environment variables
+Using a WSGI server like Gunicorn
+
+
+
+26. What is Docker, and how is it used with Python applications?
+
+Docker is a platform for containerizing applications, allowing them to run consistently across environments. Python applications can be containerized by writing a Dockerfile that specifies the environment and dependencies.
+
+
+
+
+27. How do you manage dependencies in Python projects?
+
+Dependencies can be managed using tools like pip and virtualenv, and listed in a requirements.txt file for reproducibility.
+
+
+
+
+28. Describe a challenging bug you encountered and how you resolved it.
+
+Tip: Use the STAR method (Situation, Task, Action, Result) to structure your answer.
+
+
+
+
+29. How do you stay updated with the latest developments in Python?
+
+Mention resources like official Python documentation, blogs, newsletters, conferences, and community forums.
+
+
+
+
+30. Why do you want to work with our company?
+
+Tip: Research the company's mission, projects, and culture, and align them with your skills and career goals.

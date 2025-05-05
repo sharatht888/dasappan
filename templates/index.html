@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MapOut Landing</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #f5e9ff, #e0f0ff);
+      color: #000;
+    }
+
+    /* Header */
+    .header {
+      background-color: white;
+      margin: 20px auto;
+      padding: 15px 40px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 24px;
+      letter-spacing: 6px;
+      font-weight: 300;
+    }
+
+    .logo span {
+      font-weight: 700;
+      color: #3d2b1f;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .nav-links a.active::after {
+      content: "•";
+      color: black;
+      margin-left: 4px;
+    }
+
+    .btn-start {
+      background-color: black;
+      color: white !important;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn-start:hover {
+      background-color: #333;
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 60px auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 0 20px;
+    }
+
+    .hero-text {
+      flex: 1 1 500px;
+      max-width: 600px;
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero-text h1 span {
+      display: block;
+      font-size: 64px;
+      font-weight: 900;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    .hero-text p.bold {
+      font-weight: bold;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background-color: black;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 20px;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .hero-btn::after {
+      content: "↗";
+      font-size: 18px;
+    }
+
+    .hero-btn:hover {
+      background-color: #333;
+    }
+
+    .hero-image {
+      flex: 1 1 400px;
+      max-width: 550px;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-text h1 span {
+        font-size: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">Virtual <span>Interviewer</span></div>
+    <nav class="nav-links">
+      <a href="{{ url_for('signup') }}" class="btn-start">START INTERVIEW</a>
+      <a href="#">Employer Login</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>FIND THE BEST FIT,<br><span>FASTER.</span></h1>
+      <p>Hire Smarter, Faster, and Fairer with AI-Powered Video Interviews – Available 24/7!</p>
+      <p class="bold">No scheduling. No delays. Just the best candidates, faster.</p>
+      <a href="#" class="hero-btn">START INTERVIEW</a>
+    </div>
+    <div class="hero-image">
+      <img src="https://freeimage.host/i/3Nr9Set" alt="Hero Illustration" />
+    </div>
+  </section>
+
+</body>
+</html>
