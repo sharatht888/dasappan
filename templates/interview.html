@@ -38,6 +38,9 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
         .left-section h1 {
@@ -63,8 +66,9 @@
             padding: 60px 40px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             overflow-y: auto;
+            max-height: 100vh;
         }
 
         .right-section h2 {
@@ -125,7 +129,7 @@
         </div>
         <div class="right-section">
             <h2>Answer the Questions</h2>
-            <form method="POST">
+            <form method="POST" action="{{ url_for('interview')  }}">
                 {% for question in questions%}
                 <div class="form-group">
                     <label for="q{{ question.id }}">{{ loop.index }}. {{ question.question_text }}</label>

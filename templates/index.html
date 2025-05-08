@@ -158,7 +158,7 @@
     <div class="logo">Virtual <span>Interviewer</span></div>
     <nav class="nav-links">
       <a href="{{ url_for('signup') }}" class="btn-start">START INTERVIEW</a>
-      <a href="#">Employer Login</a>
+      <a href="{{ url_for('employer_login') }}">Employer Login</a>
     </nav>
   </header>
 
@@ -167,7 +167,7 @@
       <h1>FIND THE BEST FIT,<br><span>FASTER.</span></h1>
       <p>Hire Smarter, Faster, and Fairer with AI-Powered Video Interviews – Available 24/7!</p>
       <p class="bold">No scheduling. No delays. Just the best candidates, faster.</p>
-      <a href="#" class="hero-btn">START INTERVIEW</a>
+      <a href="{{ url_for('signup') }}" class="hero-btn">START INTERVIEW</a>
     </div>
     <div class="hero-image">
       <img src="https://freeimage.host/i/3Nr9Set" alt="Hero Illustration" />
