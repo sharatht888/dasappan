@@ -80,3 +80,5 @@ CREATE TABLE employers (
 
 INSERT INTO employers (username, email, password_hash) 
 VALUES ('admin', 'admin@company.com', SHA2('admin', 256));
+
+ALTER TABLE users ADD COLUMN resume_path VARCHAR(255);

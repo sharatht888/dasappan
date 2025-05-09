@@ -9,16 +9,69 @@
       box-sizing: border-box;
     }
 
+    /* Add header styles from the provided header */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #f5f8ff, #ecf3ff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
     }
 
+    .header {
+      background-color: white;
+      margin: 20px auto;
+      padding: 15px 40px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 24px;
+      letter-spacing: 6px;
+      font-weight: 300;
+    }
+
+    .logo span {
+      font-weight: 700;
+      color: #3d2b1f; /* dark brown */
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .nav-links a.active::after {
+      content: "•";
+      color: black;
+      margin-left: 4px;
+    }
+
+    .btn-start {
+      background-color: black;
+      color: white !important;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn-start:hover {
+      background-color: #333;
+    }
+
+    /* Sign Up Page Styles (unchanged) */
     .wrapper {
       display: flex;
       width: 90%;
@@ -27,6 +80,7 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+      margin: 40px auto;
     }
 
     .left-section {
@@ -163,19 +217,25 @@
   </style>
 </head>
 <body>
+  <!-- Header Section -->
+  <header class="header">
+    <div class="logo">Virtual <span>Interviewer</span></div>
+    <nav class="nav-links">
+      <a href="#" class="btn-start">START INTERVIEW</a>
+      <a href="#">Employer Login</a>
+    </nav>
+  </header>
+
+  <!-- Sign-Up Page Section (Unchanged) -->
   <div class="wrapper">
-    <!-- Left section -->
     <div class="left-section">
       <h1>Instant talent, Intelligent Hiring</h1>
       <p>Your 1st Screen Now in Auto-Pilot ✨</p>
       <img src="https://employer.mapout.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fslide2.afb47cee.png&w=1920&q=75" alt="Hiring Illustration" />
     </div>
 
-    <!-- Right section -->
     <div class="right-section">
       <h2>Sign Up</h2>
-
-      <!-- Flash messages -->
       <div class="flashes">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -186,12 +246,12 @@
         {% endwith %}
       </div>
 
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Full Name</label>
           <input type="text" id="username" name="username" required />
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required />
         </div>
@@ -199,8 +259,20 @@
           <label for="password">Password</label>
           <input type="password" id="password" name="password" required />
         </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" required />
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="form-group">
+          <label for="resume">Upload Resume (PDF, DOCX)</label>
+          <input type="file" id="resume" name="resume" accept=".pdf" />
+        </div>
+
         <button type="submit">Sign Up</button>
       </form>
+
       <div class="login-link">
         Already have an account? <a href="{{ url_for('login') }}">Log in</a>
       </div>

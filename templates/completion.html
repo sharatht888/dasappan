@@ -1,17 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Interview Completed</title>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; margin-top: 20vh; }
-        h2 { font-size: 28px; color: #333; }
-        p { font-size: 18px; color: #666; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Thank You</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f0ff, #f5e9ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .thank-you-box {
+      background-color: #fff;
+      padding: 60px 40px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      max-width: 520px;
+      width: 90%;
+      animation: fadeInBox 0.9s ease-in-out;
+    }
+
+    lottie-player {
+      animation: popIn 1s ease;
+      width: 180px !important;
+      height: 180px !important;
+      margin: 0 auto 30px;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 16px;
+      color: #2c2c2c;
+      font-weight: 600;
+      animation: fadeInText 1.2s ease;
+    }
+
+    p {
+      font-size: 17px;
+      color: #555;
+      line-height: 1.6;
+      animation: fadeInText 1.4s ease;
+    }
+
+    .btn-home {
+      margin-top: 30px;
+      display: inline-block;
+      background-color: #000;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      animation: fadeInText 1.6s ease;
+    }
+
+    .btn-home:hover {
+      background-color: #222;
+    }
+
+    @keyframes fadeInBox {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInText {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
 </head>
 <body>
-    <h2>Interview Completed!</h2>
-    <p>Your responses have been recorded successfully.</p>
-    <a href="{{ url_for('index') }}">Return to Home</a>
+  <div class="thank-you-box">
+    <lottie-player
+      src="https://assets9.lottiefiles.com/packages/lf20_jbrw3hcz.json"
+      background="transparent"
+      speed="1"
+      autoplay
+    ></lottie-player>
+
+    <h1>Thank You</h1>
+    <p>Your responses have been successfully recorded.<br>
+       Our executive will contact you at the earliest convenience.</p>
+
+    <a href="/" class="btn-home">Go to Homepage</a>
+  </div>
 </body>
 </html>

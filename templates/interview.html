@@ -140,5 +140,31 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const password = document.getElementById("password");
+          const confirmPassword = document.getElementById("confirm_password");
+          const form = document.querySelector("form");
+      
+          function validatePasswords() {
+            if (password.value === confirmPassword.value) {
+              confirmPassword.setCustomValidity(""); // Valid input
+            } else {
+              confirmPassword.setCustomValidity("Passwords do not match.");
+            }
+          }
+      
+          // Validate passwords on input change
+          password.addEventListener("input", validatePasswords);
+          confirmPassword.addEventListener("input", validatePasswords);
+      
+          form.addEventListener("submit", function (event) {
+            validatePasswords();
+            if (!confirmPassword.validity.valid) {
+              event.preventDefault(); // Prevent form submission if passwords don't match
+            }
+          });
+        });
+      </script>
 </body>
 </html>

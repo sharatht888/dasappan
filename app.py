@@ -1,8 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session, flash, send_file
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
 import MySQLdb.cursors
 import hashlib
+import os
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)  # Initialize Flask
 app.secret_key = 'alkdsajdaklsdjsalkdsa'
@@ -16,34 +19,54 @@ app.config['MYSQL_DB'] = 'interview_system'
 
 mysql = MySQL(app)  # Initialize MySQL
 
+app.config['UPLOAD_FOLDER'] = 'uploads'  # Define it here
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)  # Now it won't throw an error
+
 @app.route('/')
 def index():
   return render_template('index.html')
 
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config.get('ALLOWED_EXTENSIONS', set())
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    error_message = None
-
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        resume = request.files['resume']  # Get uploaded file
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         existing_user = cursor.fetchone()
 
         if existing_user:
-            # Redirect to login with a query string to display an error
             return redirect(url_for('login', exists=True))
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        cursor.execute("INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)",
-                       (username, email, hashed_password))
-        mysql.connection.commit()
-        cursor.close()
-        return redirect(url_for('login'))
+        # Validate and save resume
+        if resume and allowed_file(resume.filename):
+            filename = secure_filename(resume.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            resume.save(file_path)
+
+            # Store user data including resume path
+            cursor.execute("INSERT INTO users (username, email, password_hash, resume_path) VALUES (%s, %s, %s, %s)",
+                           (username, email, hashed_password, file_path))
+            mysql.connection.commit()
+            cursor.close()
+
+            flash("Sign-up successful! Resume uploaded.", "success")
+            return redirect(url_for('login'))
+        else:
+            flash("Please upload a valid PDF resume.", "danger")
+            return redirect(url_for("signup"))
 
     return render_template('signup.html')
 
@@ -72,6 +95,8 @@ def login():
             error_message = "Invalid credentials!"
 
     return render_template('login.html', error=error_message)
+
+############################################### - Interview.html
 
 @app.route('/interview', methods=['GET', 'POST'])
 def interview():
@@ -150,6 +175,8 @@ def interview():
     cursor.close()
     return render_template('interview.html', questions=questions)
 
+############################################################## -- Interview.html
+
 @app.route('/completion')
 def completion():
     if 'loggedin' not in session:
@@ -213,7 +240,7 @@ def employer_dashboard():
 
     # Fetch leaderboard (Top Candidates)
     cursor.execute("""
-        SELECT u.username, 
+        SELECT u.id AS user_id, u.username, 
             ROUND((SUM(s.score) / (COUNT(s.question_id) * 5)) * 100, 2) AS percentage_score,
             CASE 
                 WHEN MIN(s.score) < 3 AND MAX(s.score) >= 4 THEN 'Eligible & Pending'
@@ -232,6 +259,19 @@ def employer_dashboard():
     cursor.close()
     
     return render_template('employer_dashboard.html', stats=stats, leaderboard=leaderboard)
+
+@app.route('/view_resume/<int:user_id>')
+def view_resume(user_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT resume_path FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+
+    if user and user["resume_path"]:
+        return send_file(user["resume_path"], as_attachment=False)  # Opens the PDF in browser
+    else:
+        flash("Resume not found.", "danger")
+        return redirect(url_for("employer_dashboard"))
 
 if __name__ == '__main__':
   app.run(debug=True)

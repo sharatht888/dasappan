@@ -59,7 +59,7 @@
 
     .btn-start {
       background-color: black;
-      color: white;
+      color: white !important;
       padding: 10px 20px;
       border-radius: 40px;
       font-weight: bold;
@@ -261,9 +261,9 @@
         <h3>Leaderboard</h3>
         {% for candidate in leaderboard %}
         <div class="leaderboard-item">
-          <span>{{ candidate.username }}</span> <!-- Username -->
-          <strong>{{ candidate.percentage_score }}%</strong> <!-- Percentage Score -->
-          <small style="color: gray;">{{ candidate.status }}</small> <!-- Status -->
+          <span><a href="{{ url_for('view_resume', user_id=candidate.user_id) }}" target="_blank">{{ candidate.username }}</a></span>
+          <strong>{{ candidate.percentage_score }}%</strong>
+          <small style="color: gray;">{{ candidate.status }}</small>
         </div>
         {% endfor %}
       </div>
