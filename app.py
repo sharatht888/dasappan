@@ -5,6 +5,9 @@ import MySQLdb.cursors
 import hashlib
 import os
 from werkzeug.utils import secure_filename
+import cohere
+
+co = cohere.Client("HLq3omnEaFgsZ5v4qc7A7oqeZj9kwVzO2bfn1czP")
 
 
 app = Flask(__name__)  # Initialize Flask
@@ -97,6 +100,38 @@ def login():
     return render_template('login.html', error=error_message)
 
 ############################################### - Interview.html
+reference_answers = {
+    1: "I'm a Python developer with X years of experience in web applications and automation. My strengths include backend development, database management, and API integrations.",
+    2: "Python is an interpreted, high-level, dynamically typed language with extensive libraries, cross-platform compatibility, and support for object-oriented programming.",
+    3: "Lists are ordered and mutable, tuples are ordered and immutable, and sets are unordered collections that do not allow duplicate values.",
+    4: "The __init__ method initializes object attributes when an instance is created, allowing for custom initialization.",
+    5: "Python manages memory using automatic garbage collection, reference counting, and heap memory allocation.",
+    6: "Python's built-in data types include strings, integers, floats, lists, tuples, dictionaries, sets, and booleans.",
+    7: "Shallow copies create a new object but reference the same elements, while deep copies create completely independent copies of the elements.",
+    8: "Python's OOP principles include encapsulation, inheritance, polymorphism, and abstraction, which help organize and reuse code efficiently.",
+    9: "Python uses the Method Resolution Order (MRO) and the C3 linearization algorithm to handle multiple inheritance and determine attribute lookup order.",
+    10: "Class methods operate on the class itself using @classmethod, while static methods don't require a class instance and use @staticmethod.",
+    11: "An iterator in Python is an object that implements the __iter__() and __next__() methods, allowing sequential traversal through elements.",
+    12: "Generators are special iterators that use the yield keyword to produce values lazily, improving memory efficiency.",
+    13: "Python handles exceptions using try-except blocks, allowing developers to gracefully catch and handle runtime errors.",
+    14: "Assertions check conditions during debugging, while exceptions handle runtime errors dynamically with try-except blocks.",
+    15: "Unit testing in Python can be performed using the unittest or pytest libraries, leveraging assertions to validate expected behavior.",
+    16: "Decorators in Python modify functions or methods dynamically by wrapping them within another function using @decorator syntax.",
+    17: "The Global Interpreter Lock (GIL) in Python ensures thread safety but limits true parallel execution in multi-threaded programs.",
+    18: "Context managers use the 'with' statement and __enter__/__exit__ methods to handle resource management cleanly.",
+    19: "A stack in Python can be implemented using a list with append() for push and pop() for removal, following LIFO principles.",
+    20: "A string can be reversed in Python using slice notation [::-1] or the reverse() method on a list.",
+    21: "To find the first non-repeating character in a string, use a dictionary to track occurrences and return the first unique entry.",
+    22: "Django is a full-stack framework with built-in ORM and authentication, while Flask is lightweight, micro-framework providing flexibility.",
+    23: "Database migrations in Django are handled using makemigrations and migrate commands to reflect schema changes in the database.",
+    24: "A RESTful API follows HTTP methods like GET, POST, PUT, DELETE, using Flask or Django to create structured web services.",
+    25: "Python applications can be deployed using Docker, AWS, Heroku, or cloud providers, ensuring portability and scalability.",
+    26: "Docker enables containerization of Python applications, packaging dependencies and runtime in an isolated environment.",
+    27: "Dependencies in Python projects are managed using pip, virtual environments, requirements.txt, or Poetry for isolation.",
+    28: "A challenging bug I encountered involved a circular import issue in Flask, which I resolved using blueprint restructuring.",
+    29: "I stay updated with Python developments through documentation, conferences, blogs, open-source contributions, and official PEP proposals.",
+    30: "I want to work with your company because it aligns with my skills, offers growth opportunities, and has an innovative technical culture."
+}
 
 @app.route('/interview', methods=['GET', 'POST'])
 def interview():
@@ -106,74 +141,66 @@ def interview():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM questions")
     questions = cursor.fetchall()
-
-    keyword_map = {
-            1: ["background", "experience", "strengths", "achievements", "goals"],
-            2: ["interpreted", "dynamic", "object-oriented", "libraries", "cross-platform"],
-            3: ["mutable", "immutable", "unordered", "indexing", "performance"],
-            4: ["constructor", "initialization", "object creation", "parameters", "self"],
-            5: ["garbage collection", "reference counting", "heap", "optimization", "PEP 3121"],
-            6: ["string", "integer", "float", "list", "dictionary"],
-            7: ["copy module", "references", "memory", "deepcopy()", "shallow copy"],
-            8: ["encapsulation", "inheritance", "polymorphism", "abstraction", "objects"],
-            9: ["MRO", "super()", "diamond problem", "parent classes", "overriding"],
-            10: ["@classmethod", "@staticmethod", "self", "instance", "bound method"],
-            11: ["iterable", "next()", "StopIteration", "generator", "loop"],
-            12: ["yield", "lazy evaluation", "memory efficiency", "iterators", "performance"],
-            13: ["try-except", "raise", "error handling", "exception hierarchy", "logging"],
-            14: ["debugging", "AssertionError", "validation", "try-except", "runtime handling"],
-            15: ["unittest", "pytest", "assertions", "test cases", "mocking"],
-            16: ["@decorator", "functions", "wrapping", "higher order", "DRY principle"],
-            17: ["threads", "concurrency", "CPython", "performance", "memory management"],
-            18: ["with statement", "__enter__", "__exit__", "resource management", "file handling"],
-            19: ["LIFO", "push", "pop", "data structure", "list"],
-            20: ["slice notation", "[::-1]", "reverse()", "iteration", "recursion"],
-            21: ["dictionary", "frequency count", "OrderedDict", "iteration", "optimization"],
-            22: ["micro vs full-stack", "routing", "ORM", "flexibility", "scalability"],
-            23: ["migration scripts", "makemigrations", "migrate", "models", "schema changes"],
-            24: ["CRUD", "Flask/Django", "HTTP methods", "JSON", "endpoints"],
-            25: ["cloud", "Docker", "CI/CD", "virtual environment", "performance"],
-            26: ["containers", "image", "virtualization", "orchestration", "dependencies"],
-            27: ["pip", "virtualenv", "requirements.txt", "Poetry", "environment isolation"],
-            28: ["debugging", "logging", "exception handling", "root cause analysis", "fix"],
-            29: ["documentation", "blogs", "conferences", "open source", "latest features"],
-            30: ["culture", "growth", "contribution", "values", "mission"]
-        }
+    cursor.close()
 
     if request.method == 'POST':
-        user_id = session.get('user_id')  # Ensure user ID is stored in session
+        user_id = session.get('user_id')
 
         # Get highest attempt number
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT MAX(attempt_number) AS max_attempt FROM interview_responses WHERE user_id = %s", (user_id,))
         result = cursor.fetchone()
         max_attempt = result['max_attempt'] if result['max_attempt'] else 0
-
         attempt_number = max_attempt + 1
 
-        # Loop through questions and insert responses
+        user_answers = {}
+
         for question in questions:
             response_text = request.form.get(f"q{question['id']}")
-            if response_text:  # Only insert if there is a response
+            if response_text:
+                user_answers[f"q{question['id']}"] = response_text  # ✅ Fix assignment
+                
                 cursor.execute(
                     "INSERT INTO interview_responses (user_id, question_id, attempt_number, response) VALUES (%s, %s, %s, %s)",
                     (user_id, question['id'], attempt_number, response_text)
                 )
 
-                score = sum(1 for keyword in keyword_map.get(question['id'], []) if keyword.lower() in response_text.lower())
+        # **Embed Cohere for Similarity Scoring**
+        user_list = [user_answers[q] for q in user_answers]
+        ref_list = [reference_answers.get(int(q.replace("q", "")), "") for q in user_answers]  # ✅ Fix reference answer retrieval
 
-                cursor.execute(
-                    "INSERT INTO interview_scores (user_id, question_id, attempt_number, score) VALUES (%s, %s, %s, %s)",
-                    (user_id, question['id'], attempt_number, score)
-                )
+        user_embeddings = co.embed(texts=user_list).embeddings
+        ref_embeddings = co.embed(texts=ref_list).embeddings
+
+        # **Loop through user_answers and store scores properly**
+        for idx, (question_id, response_text) in enumerate(user_answers.items()):
+            similarity = cosine_similarity(user_embeddings[idx], ref_embeddings[idx])  # ✅ Ensure correct indexing
+
+            if similarity > 0.85:
+                score = 4
+            elif similarity > 0.65:
+                score = 2
+            else:
+                score = -1
+
+            cursor.execute(
+                "INSERT INTO interview_scores (user_id, question_id, attempt_number, score) VALUES (%s, %s, %s, %s)",
+                (user_id, question_id.replace("q", ""), attempt_number, score)
+            )
 
         mysql.connection.commit()
         cursor.close()
-        
-        # Redirect to completion page
-        return redirect(url_for('completion'))
 
-    cursor.close()
+        return redirect(url_for('completion'))  # ✅ Moved outside the loop
+
     return render_template('interview.html', questions=questions)
+    
+def cosine_similarity(vec1, vec2):
+    dot = sum(a * b for a, b in zip(vec1, vec2))
+    mag1 = sum(a * a for a in vec1) ** 0.5
+    mag2 = sum(b * b for b in vec2) ** 0.5
+    return dot / (mag1 * mag2)
+                
 
 ############################################################## -- Interview.html
 
@@ -219,15 +246,18 @@ def employer_dashboard():
         SELECT 
             COUNT(DISTINCT user_id) AS total_candidates,
 
-            -- Eligible: At least one answer with score >=4 in the first attempt
-            COUNT(DISTINCT CASE WHEN score >= 4 AND attempt_number = 1 THEN user_id END) AS eligible_candidates,
+            COUNT(DISTINCT CASE WHEN attempt_number = 1 AND user_id IN (
+                SELECT user_id FROM interview_scores GROUP BY user_id HAVING AVG(score) >= 3.5
+            ) THEN user_id END) AS eligible_candidates,
 
-            -- Saved: Candidates averaging between 3.0 and 3.99 over multiple attempts
-            COUNT(DISTINCT CASE WHEN score BETWEEN 3 AND 3.99 AND attempt_number > 1 THEN user_id END) AS saved_candidates,
+            COUNT(DISTINCT CASE WHEN attempt_number > 1 AND user_id IN (
+                SELECT user_id FROM interview_scores GROUP BY user_id HAVING AVG(score) BETWEEN 2.5 AND 3.99
+            ) THEN user_id END) AS saved_candidates,
 
-            -- Pending: Candidates with at least one answer <3
-            COUNT(DISTINCT CASE WHEN score < 3 THEN user_id END) AS pending_candidates
-        FROM interview_scores
+            COUNT(DISTINCT CASE WHEN user_id IN (
+                SELECT user_id FROM interview_scores GROUP BY user_id HAVING AVG(score) < 2.5
+            ) THEN user_id END) AS pending_candidates
+        FROM interview_scores;
     """)
     stats = cursor.fetchone()
 
@@ -240,13 +270,14 @@ def employer_dashboard():
 
     # Fetch leaderboard (Top Candidates)
     cursor.execute("""
-        SELECT u.id AS user_id, u.username, 
-            ROUND((SUM(s.score) / (COUNT(s.question_id) * 5)) * 100, 2) AS percentage_score,
+        SELECT 
+            u.id AS user_id, u.username, 
+            ROUND((SUM(s.score) / (COUNT(s.question_id) * 4.0) * 100), 2) AS percentage_score,  -- ✅ Prevent integer division
             CASE 
-                WHEN MIN(s.score) < 3 AND MAX(s.score) >= 4 THEN 'Eligible & Pending'
-                WHEN MAX(s.score) >= 4 THEN 'Eligible'
-                WHEN AVG(s.score) BETWEEN 3 AND 3.99 THEN 'Saved'
-                ELSE 'Pending'
+                WHEN COALESCE(AVG(s.score), 0) >= 3.5 THEN 'Eligible'  -- ✅ Use AVG for fairness
+                WHEN COALESCE(AVG(s.score), 0) BETWEEN 2.5 AND 3.99 THEN 'Saved'  -- ✅ Adjusted range for stability
+                WHEN COALESCE(AVG(s.score), 0) < 2.5 THEN 'Pending'  -- ✅ Ensure overall score dictates "Pending"
+                ELSE 'Unknown'  -- ✅ Edge case fallback for safety
             END AS status
         FROM users u
         JOIN interview_scores s ON u.id = s.user_id
