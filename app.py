@@ -271,13 +271,14 @@ def employer_dashboard():
     # Fetch leaderboard (Top Candidates)
     cursor.execute("""
         SELECT 
-            u.id AS user_id, u.username, 
-            ROUND((SUM(s.score) / (COUNT(s.question_id) * 4.0) * 100), 2) AS percentage_score,  -- ✅ Prevent integer division
+            u.id AS user_id, 
+            u.username, 
+            ROUND(GREATEST(0, (SUM(s.score) / (COUNT(s.question_id) * 4.0)) * 100), 2) AS percentage_score, 
             CASE 
-                WHEN COALESCE(AVG(s.score), 0) >= 3.5 THEN 'Eligible'  -- ✅ Use AVG for fairness
-                WHEN COALESCE(AVG(s.score), 0) BETWEEN 2.5 AND 3.99 THEN 'Saved'  -- ✅ Adjusted range for stability
-                WHEN COALESCE(AVG(s.score), 0) < 2.5 THEN 'Pending'  -- ✅ Ensure overall score dictates "Pending"
-                ELSE 'Unknown'  -- ✅ Edge case fallback for safety
+                WHEN ROUND((SUM(s.score) / (COUNT(s.question_id) * 4.0) * 100), 2) >= 70 THEN 'Eligible'
+                WHEN ROUND((SUM(s.score) / (COUNT(s.question_id) * 4.0) * 100), 2) >= 50 THEN 'Saved'
+                WHEN ROUND((SUM(s.score) / (COUNT(s.question_id) * 4.0) * 100), 2) < 50 THEN 'Pending'
+                ELSE 'Unknown'
             END AS status
         FROM users u
         JOIN interview_scores s ON u.id = s.user_id
