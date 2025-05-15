@@ -1,0 +1,54 @@
+[33mcommit 856405e10d0affab0ffea4d338a2bd54eefe6662[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 13 17:19:00 2025 +0400
+
+    Delete uploads/RP239709630AE_Receipt.pdf
+
+[33mcommit f28866c50037e043dbfb9c5974c2e14485dd1d20[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 13 17:17:13 2025 +0400
+
+    Changed SQL Query in Dashboard to ensure a 0-100% scale
+
+[33mcommit 3d49f549ca85a7f9e82cbb9103cf54199c201b26[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Sat May 10 18:34:21 2025 +0400
+
+    Removed uploads, and changed app.py for cohere
+    implementation
+
+[33mcommit 367b3d2f9b0954cdfdb04b66708baa6b35685579[m
+Author: Sharath <sharatht888@gmail.com>
+Date:   Sat May 10 00:40:15 2025 +0400
+
+    done
+
+[33mcommit a075e98e841f06c7072ff36056df1672fb6a0aaf[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Thu May 8 18:29:24 2025 +0400
+
+    DashboardCompleted
+
+[33mcommit e87b5c44788d6ed91477c0810278a5a715349f88[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 6 16:53:13 2025 +0400
+
+    Update sqldb.txt
+
+[33mcommit b1c306934a81cb6df202bae38e06add6e8955873[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 6 16:52:00 2025 +0400
+
+    SQL setup updated in txt
+
+[33mcommit 262102790c86baa1c166d03554dde7a94c928a5b[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 6 16:47:54 2025 +0400
+
+    push1
+
+[33mcommit 1af1bd5a07a375af48f0437431e7927483f806e7[m
+Author: sharatht888 <113619551+sharatht888@users.noreply.github.com>
+Date:   Tue May 6 02:07:44 2025 +0400
+
+    Add files via upload

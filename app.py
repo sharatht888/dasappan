@@ -203,6 +203,9 @@ def cosine_similarity(vec1, vec2):
                 
 
 ############################################################## -- Interview.html
+@app.route("/failure")
+def failure():
+    return render_template("failure.html")
 
 @app.route('/completion')
 def completion():
