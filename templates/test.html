@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Detection Interview</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    #webcam { border: 2px solid #444; margin-top: 20px; width: 320px; height: 240px; }
+    #warning { font-weight: bold; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <h1>Interview Monitoring</h1>
+  <p>Please keep your face visible at all times. This interview is being monitored.</p>
+  <video id="webcam" autoplay playsinline muted></video>
+  <div id="warning">Initializing webcam...</div>
+
+  <script>
+      const warningDiv = document.getElementById("warning");
+
+      async function sendImageToServer() {
+          const video = document.getElementById("webcam");
+          const canvas = document.createElement("canvas");
+          canvas.width = video.videoWidth || 320;
+          canvas.height = video.videoHeight || 240;
+          canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(async (blob) => {
+              if (!blob) {
+                  console.error("❌ Failed to convert image to Blob!");
+                  return;
+              }
+
+              const formData = new FormData();
+              formData.append("image", blob);
+
+              try {
+                  const response = await fetch("/detect", {
+                      method: "POST",
+                      body: formData
+                  });
+
+                  const data = await response.json();
+                  console.log("✅ Server Response:", data);
+
+                  if (!data.face_detected) {
+                      warningDiv.textContent = `🚨 Face not detected! (${data.disappearance_count}/5)`;
+                      warningDiv.style.color = "red";
+                  } else if (data.left_right_moves > 2) {
+                      warningDiv.textContent = `⚠️ Looking sideways too often! (${data.left_right_moves}/5)`;
+                      warningDiv.style.color = "orange";
+                  } else if (data.look_away_count > 2) {
+                      warningDiv.textContent = `⚠️ Looking down too much! (${data.look_away_count}/5)`;
+                      warningDiv.style.color = "yellow";
+                  } else {
+                      warningDiv.textContent = `✅ Normal posture detected.`;
+                      warningDiv.style.color = "green";
+                  }
+
+              } catch (err) {
+                  console.error("❌ Failed to send request:", err);
+                  warningDiv.textContent = "❌ Server request failed!";
+                  warningDiv.style.color = "red";
+              }
+          }, "image/jpeg");
+      }
+
+      setInterval(sendImageToServer, 1000);
+      async function setupWebcam() {
+          const video = document.getElementById("webcam");
+
+          try {
+              const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+              video.srcObject = stream;
+              console.log("✅ Webcam initialized successfully.");
+          } catch (err) {
+              console.error("❌ Webcam Error:", err);
+              warningDiv.textContent = "❌ Could not access webcam! Check browser settings.";
+              warningDiv.style.color = "red";
+          }
+      }
+
+      setupWebcam();
+  </script>
+</body>
+</html>
