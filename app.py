@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash, send_file
+from flask import Flask, request, render_template, redirect, url_for, session, flash, send_file, jsonify
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
 import MySQLdb.cursors
@@ -6,6 +6,8 @@ import hashlib
 import os
 from werkzeug.utils import secure_filename
 import cohere
+import numpy as np
+import cv2
 
 co = cohere.Client("HLq3omnEaFgsZ5v4qc7A7oqeZj9kwVzO2bfn1czP")
 
@@ -307,6 +309,73 @@ def view_resume(user_id):
     else:
         flash("Resume not found.", "danger")
         return redirect(url_for("employer_dashboard"))
+
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+
+cheating_count = 0
+max_cheating_limit = 30
+
+@app.route("/cheat_detect", methods=["POST"])
+def cheat_detect():
+    global cheating_count
+
+    file = request.files.get("image")
+    if not file:
+        print("❌ No Image Received!")
+        return jsonify({"error": "No image provided"}), 400
+
+    try:
+        # Convert uploaded image into OpenCV format
+        image = np.frombuffer(file.read(), dtype=np.uint8)
+        img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+        if img is None or img.size == 0:
+            print("❌ Image decoding failed or empty!")
+            return jsonify({"error": "Image decoding error"}), 500
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Verify Cascade Classifier is loaded
+        if face_cascade.empty():
+            print("❌ Haar cascade file not loaded properly!")
+            return jsonify({"error": "Cascade classifier failed"}), 500
+
+        # Try detecting faces safely
+        try:
+            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        except cv2.error as e:
+            print(f"⚠️ OpenCV Error: {e}")
+            return jsonify({"error": "Face detection error"}), 500
+
+        print(f"✅ Detected {len(faces)} face(s)")
+
+        # Ensure function exits properly if no faces are detected
+        faces = faces if faces is not None else []
+
+        # Update cheating logic
+        if len(faces) == 0:
+            cheating_count += 1
+            status = "🚨 Face Not Detected!"
+        elif len(faces) > 1:
+            cheating_count += 2
+            status = "⚠️ Multiple Faces Detected!"
+        else:
+            cheating_count = max(0, cheating_count - 0.5)
+            status = "✅ Normal Behavior"
+
+        if cheating_count >= max_cheating_limit:
+            return jsonify({"redirect": "/failure"})
+
+        return jsonify({
+            "face_detected": len(faces) > 0,
+            "cheating_attempts": int(cheating_count),
+            "status": status
+        })
+
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
   app.run(debug=True)

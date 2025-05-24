@@ -125,8 +125,9 @@
         <div class="left-section">
             <div id="timer" style="font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 20px; color: red;">Time Remaining: <span id="countdown">30:00</span></div>
             <h1>Interview Time</h1>
-            <p>Please answer the following questions</p>
-            <img src="https://www.surveylegend.com/wordpress/wp-content/uploads/2020/12/best-open-ended-questions.png" alt="Interview illustration" />
+            <p>Please answer the following questions and keep your face visible at all times.</p>
+            <video id="webcam" autoplay playsinline muted width="320" height="240" style="border-radius: 12px; border: 2px solid black;"></video>
+            <div id="status" style="font-size: 18px; font-weight: bold; margin-top: 10px; color: green;">✅ Normal Behavior</div>
         </div>
         <div class="right-section">
             <h2>Answer the Questions</h2>
@@ -143,62 +144,19 @@
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const password = document.getElementById("password");
-          const confirmPassword = document.getElementById("confirm_password");
-          const form = document.querySelector("form");
-      
-          function validatePasswords() {
-            if (password.value === confirmPassword.value) {
-              confirmPassword.setCustomValidity(""); // Valid input
-            } else {
-              confirmPassword.setCustomValidity("Passwords do not match.");
-            }
-          }
-      
-          // Validate passwords on input change
-          password.addEventListener("input", validatePasswords);
-          confirmPassword.addEventListener("input", validatePasswords);
-      
-          form.addEventListener("submit", function (event) {
-            validatePasswords();
-            if (!confirmPassword.validity.valid) {
-              event.preventDefault(); // Prevent form submission if passwords don't match
-            }
-          });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
             let timeLeft = 30 * 60; // 30 minutes in seconds
             const countdownEl = document.getElementById("countdown");
             const form = document.querySelector("form");
-        
+
             function updateTimer() {
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 countdownEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                
+
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     alert("Time's up! Submitting the form now.");
-                    form.submit(); // Automatically submit the form when time expires
-                } else {
-                    timeLeft--;
-                }
-            }
-        
-            const timerInterval = setInterval(updateTimer, 1000);
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            let timeLeft = 30 * 60; // 30 minutes in seconds
-            const countdownEl = document.getElementById("countdown");
-
-            function updateTimer() {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                countdownEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    window.location.href = "/failure"; // Redirect to failure page
+                    form.submit(); // Auto-submit when time expires
                 } else {
                     timeLeft--;
                 }
@@ -206,6 +164,80 @@
 
             const timerInterval = setInterval(updateTimer, 1000);
         });
+
+        async function setupWebcam() {
+            const video = document.getElementById("webcam");
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+
+                await video.play(); // Ensure playback starts
+                console.log("✅ Webcam initialized:", stream);
+            } catch (err) {
+                console.error("❌ Webcam Error:", err);
+                alert("Please grant camera access for monitoring.");
+            }
+        }
+
+        const warningDiv = document.getElementById("warning");
+        const statusDiv = document.getElementById("status");
+
+        async function sendImageToServer() {
+            const video = document.getElementById("webcam");
+
+            // Ensure webcam feed has loaded properly
+            if (!video.videoWidth || !video.videoHeight) {
+                console.warn("⚠️ Webcam not fully ready, skipping this frame...");
+                setTimeout(sendImageToServer, 3000); // Retry after 3 seconds
+                return;
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth || 160;  
+            canvas.height = video.videoHeight || 120;  
+            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    console.error("❌ Failed to convert image to Blob!");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("image", blob);
+
+                try {
+                    const response = await fetch("http://127.0.0.1:5000/cheat_detect", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    console.log("✅ Server Response:", data);
+
+                    // Update UI based on server response
+                    statusDiv.textContent = data.status || "⚠️ No status received!";
+                    statusDiv.style.color = data.status.includes("🚨") ? "red" :
+                                            data.status.includes("⚠️") ? "orange" : "green";
+
+                } catch (err) {
+                    console.error("❌ Failed to send request:", err);
+                    statusDiv.textContent = `❌ Server request failed: ${err.message}`;
+                    statusDiv.style.color = "red";
+                }
+            }, "image/jpeg");
+
+            setTimeout(sendImageToServer, 3000); // Send every 3 seconds to reduce server load
+        }
+
+        // Start detection after webcam is initialized
+        setupWebcam();
+        setTimeout(sendImageToServer, 3000);
       </script>
 </body>
 </html>
