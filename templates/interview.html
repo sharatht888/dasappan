@@ -220,7 +220,14 @@
                     const data = await response.json();
                     console.log("✅ Server Response:", data);
 
+                    if (data.redirect) {
+                        console.log("⚠️ Redirecting user to:", data.redirect);
+                        window.location.href = data.redirect; // ✅ Forces browser redirection
+                        return
+                    }
+
                     // Update UI based on server response
+                    const statusDiv = document.getElementById("status");
                     statusDiv.textContent = data.status || "⚠️ No status received!";
                     statusDiv.style.color = data.status.includes("🚨") ? "red" :
                                             data.status.includes("⚠️") ? "orange" : "green";

@@ -314,7 +314,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_fronta
 
 
 cheating_count = 0
-max_cheating_limit = 30
+max_cheating_limit = 10
 
 @app.route("/cheat_detect", methods=["POST"])
 def cheat_detect():
@@ -365,7 +365,7 @@ def cheat_detect():
             status = "✅ Normal Behavior"
 
         if cheating_count >= max_cheating_limit:
-            return jsonify({"redirect": "/failure"})
+            return jsonify({"redirect": "/failure", "status": "❌ Too many suspicious behaviors detected!"})
 
         return jsonify({
             "face_detected": len(faces) > 0,
